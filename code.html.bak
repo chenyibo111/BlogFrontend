@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="en" class="">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>The Silent Curator - Design & Philosophy</title>
+    
+    <!-- Fonts and Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif:ital,wght@0,400;0,700;0,900;1,400&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    
+    <!-- React and Router CDNs -->
+    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/history@5/umd/history.development.js"></script>
+    <script src="https://unpkg.com/react-router@6.3.0/umd/react-router.development.js"></script>
+    <script src="https://unpkg.com/react-router-dom@6.3.0/umd/react-router-dom.development.js"></script>
+    <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
+
+    <script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "primary-container": "#0f2e2a",
+              "surface-dim": "#dadada",
+              "on-error": "#ffffff",
+              "error-container": "#ffdad6",
+              "tertiary-container": "#3e2219",
+              "surface-tint": "#46645f",
+              "background": "#f9f9f9",
+              "on-secondary-fixed-variant": "#3d4947",
+              "surface-container-lowest": "#ffffff",
+              "on-tertiary-fixed": "#2e150c",
+              "secondary-fixed": "#d9e5e2",
+              "inverse-primary": "#adcdc7",
+              "primary-fixed": "#c8e9e3",
+              "on-secondary-container": "#596562",
+              "on-surface": "#1a1c1c",
+              "surface-container-highest": "#e2e2e2",
+              "secondary": "#55615e",
+              "inverse-on-surface": "#f1f1f1",
+              "on-secondary": "#ffffff",
+              "tertiary-fixed": "#ffdbd0",
+              "outline-variant": "#c1c8c6",
+              "on-primary-fixed-variant": "#2e4c48",
+              "surface": "#f9f9f9",
+              "surface-bright": "#f9f9f9",
+              "inverse-surface": "#2f3131",
+              "on-tertiary-container": "#b1877a",
+              "primary-fixed-dim": "#adcdc7",
+              "secondary-container": "#d6e2df",
+              "primary": "#001915",
+              "on-surface-variant": "#414847",
+              "surface-container-high": "#e8e8e8",
+              "on-primary-container": "#779691",
+              "surface-variant": "#e2e2e2",
+              "on-secondary-fixed": "#131e1c",
+              "on-primary": "#ffffff",
+              "surface-container": "#eeeeee",
+              "surface-container-low": "#f3f3f3",
+              "secondary-fixed-dim": "#bdc9c6",
+              "tertiary-fixed-dim": "#ebbcae",
+              "on-tertiary-fixed-variant": "#603f34",
+              "outline": "#717977",
+              "error": "#ba1a1a",
+              "on-background": "#1a1c1c",
+              "on-error-container": "#93000a",
+              "on-tertiary": "#ffffff",
+              "on-primary-fixed": "#00201c",
+              "tertiary": "#260e07"
+            },
+            fontFamily: {
+              "headline": ["Noto Serif"],
+              "body": ["Inter"],
+              "label": ["Inter"]
+            },
+            borderRadius: {"DEFAULT": "0.125rem", "lg": "0.25rem", "xl": "0.5rem", "full": "0.75rem"},
+          },
+        },
+      }
+    </script>
+    <style>
+      .material-symbols-outlined {
+        font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+      }
+      body {
+        font-family: 'Inter', sans-serif;
+        background-color: #f9f9f9;
+        color: #1a1c1c;
+      }
+      .editorial-grid {
+        display: grid;
+        grid-template-columns: repeat(12, minmax(0, 1fr));
+      }
+      .font-serif { font-family: 'Noto Serif', serif; }
+      .font-sans { font-family: 'Inter', sans-serif; }
+    </style>
+</head>
+<body class="bg-surface text-on-surface selection:bg-primary-fixed selection:text-on-primary-fixed">
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useEffect } = React;
+        const { createRoot } = ReactDOM;
+        const { MemoryRouter, Routes, Route, Link, useNavigate, useLocation } = ReactRouterDOM;
+
+        // --- Shared Components ---
+
+        const TopNavBar = () => {
+            const location = useLocation();
+            const isActive = (path) => location.pathname === path;
+            
+            return (
+                <nav class="fixed top-0 w-full z-50 bg-white/80 dark:bg-emerald-950/80 backdrop-blur-md shadow-[0_4px_20px_rgba(0,25,21,0.04)] dark:shadow-none">
+                    <div class="flex justify-between items-center max-w-7xl mx-auto px-8 h-20">
+                        <Link to="/" class="text-2xl font-serif font-black tracking-tighter text-emerald-900 dark:text-emerald-50">
+                            The Silent Curator
+                        </Link>
+                        <div class="hidden md:flex items-center space-x-12">
+                            <Link to="/" class={`font-serif font-bold tracking-tight transition-colors ${isActive('/') ? 'text-emerald-900 border-b-2 border-emerald-900 dark:text-emerald-50 dark:border-emerald-50 pb-1' : 'text-emerald-800/60 dark:text-emerald-200/60 hover:text-emerald-900 dark:hover:text-emerald-50'}`}>Home</Link>
+                            <Link to="/blog" class={`font-serif font-bold tracking-tight transition-colors ${isActive('/blog') || isActive('/post') ? 'text-emerald-900 border-b-2 border-emerald-900 dark:text-emerald-50 dark:border-emerald-50 pb-1' : 'text-emerald-800/60 dark:text-emerald-200/60 hover:text-emerald-900 dark:hover:text-emerald-50'}`}>Blog</Link>
+                            <Link to="/about" class={`font-serif font-bold tracking-tight transition-colors ${isActive('/about') ? 'text-emerald-900 border-b-2 border-emerald-900 dark:text-emerald-50 dark:border-emerald-50 pb-1' : 'text-emerald-800/60 dark:text-emerald-200/60 hover:text-emerald-900 dark:hover:text-emerald-50'}`}>About</Link>
+                            <Link to="/archive" class={`font-serif font-bold tracking-tight transition-colors ${isActive('/archive') ? 'text-emerald-900 border-b-2 border-emerald-900 dark:text-emerald-50 dark:border-emerald-50 pb-1' : 'text-emerald-800/60 dark:text-emerald-200/60 hover:text-emerald-900 dark:hover:text-emerald-50'}`}>Archive</Link>
+                        </div>
+                        <div class="flex items-center space-x-6 text-emerald-900 dark:text-emerald-50">
+                            <span class="material-symbols-outlined hover:opacity-80 transition-opacity cursor-pointer">rss_feed</span>
+                            <span class="material-symbols-outlined hover:opacity-80 transition-opacity cursor-pointer">mail</span>
+                            <span class="material-symbols-outlined hover:opacity-80 transition-opacity cursor-pointer">search</span>
+                        </div>
+                    </div>
+                </nav>
+            );
+        };
+
+        const Footer = () => (
+            <footer class="w-full py-16 bg-emerald-50 dark:bg-emerald-900/20">
+                <div class="max-w-7xl mx-auto px-8 flex flex-col md:flex-row justify-between items-start gap-8">
+                    <div class="space-y-4">
+                        <div class="font-serif text-lg font-bold text-emerald-900 dark:text-emerald-50">The Silent Curator</div>
+                        <p class="max-w-sm text-emerald-800/70 dark:text-emerald-200/70 font-sans text-sm tracking-wide leading-relaxed">
+                            An editorial exploration of design, architecture, and the intentional lifestyle. Curating the quiet moments of excellence.
+                        </p>
+                    </div>
+                    <div class="grid grid-cols-2 md:grid-cols-3 gap-12">
+                        <div class="flex flex-col gap-3">
+                            <span class="font-label text-xs font-black uppercase tracking-widest text-emerald-900 dark:text-emerald-50">Journal</span>
+                            <Link to="/archive" class="text-emerald-800/70 dark:text-emerald-200/70 hover:text-emerald-950 dark:hover:text-white transition-colors text-sm">Archive</Link>
+                            <a href="#" class="text-emerald-800/70 dark:text-emerald-200/70 hover:text-emerald-950 dark:hover:text-white transition-colors text-sm">Newsletter</a>
+                            <a href="#" class="text-emerald-800/70 dark:text-emerald-200/70 hover:text-emerald-950 dark:hover:text-white transition-colors text-sm">Contributors</a>
+                        </div>
+                        <div class="flex flex-col gap-3">
+                            <span class="font-label text-xs font-black uppercase tracking-widest text-emerald-900 dark:text-emerald-50">Legal</span>
+                            <a href="#" class="text-emerald-800/70 dark:text-emerald-200/70 hover:text-emerald-950 dark:hover:text-white transition-colors text-sm">Privacy</a>
+                            <a href="#" class="text-emerald-800/70 dark:text-emerald-200/70 hover:text-emerald-950 dark:hover:text-white transition-colors text-sm">Terms</a>
+                            <a href="#" class="text-emerald-800/70 dark:text-emerald-200/70 hover:text-emerald-950 dark:hover:text-white transition-colors text-sm">Cookies</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="max-w-7xl mx-auto px-8 mt-16 pt-8 border-t border-emerald-900/10 flex justify-between items-center">
+                    <p class="text-emerald-800/70 dark:text-emerald-200/70 font-sans text-xs tracking-wide uppercase">
+                        © 2024 The Silent Curator. Built with intentionality.
+                    </p>
+                    <div class="flex gap-6">
+                        <span class="material-symbols-outlined text-emerald-900/40 text-lg cursor-pointer hover:text-emerald-900 transition-colors">public</span>
+                        <span class="material-symbols-outlined text-emerald-900/40 text-lg cursor-pointer hover:text-emerald-900 transition-colors">interests</span>
+                    </div>
+                </div>
+            </footer>
+        );
+
+        // --- Pages ---
+
+        const HomePage = () => (
+            <main class="pt-32 pb-24">
+                <section class="max-w-7xl mx-auto px-8 mb-32">
+                    <div class="grid grid-cols-12 gap-8">
+                        <div class="col-span-12 md:col-start-3 md:col-span-8">
+                            <h1 class="text-5xl md:text-7xl font-black text-primary leading-[1.1] tracking-tight mb-8">
+                                Hello, I'm a writer and designer focused on minimal aesthetics.
+                            </h1>
+                            <p class="text-lg md:text-xl text-on-surface-variant max-w-2xl leading-relaxed">
+                                Through the lens of intentional design and editorial curation, I explore the quiet spaces where form meets function. Welcome to my digital gallery of thoughts.
+                            </p>
+                        </div>
+                    </div>
+                </section>
+                <section class="max-w-7xl mx-auto px-8 mb-24">
+                    <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+                        <div class="lg:col-span-7 aspect-[4/3] bg-surface-container overflow-hidden group">
+                            <img alt="Featured article" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCiXhVcucyPsaXuVbFrQlGNKohN2cNTa6PJynarWSuRDcYxNK0T7F_-YKPYOO70R1EN-bfhWkH5x_R3M_mMU7TJInDuBleohDcsge7D35vez1xpwq4Sz6-ACvZmuvz4daGgj5HMxvyw_KvN2aT3YabaiKWrcWF6tMpudp3en9RigERXnJSwtuyi1w-pCZs8CzoakoZvdyxAkwn0mlvZkVxdbHu02fddbIqwW5b69enQbN9wfAdoVgKfA--sh1sdpRc2I9JsOmJo_DQB"/>
+                        </div>
+                        <div class="lg:col-span-5 flex flex-col justify-center">
+                            <span class="text-xs font-bold tracking-[0.2em] text-primary uppercase mb-4 font-label">Feature Story</span>
+                            <h2 class="text-4xl md:text-5xl font-bold text-primary mb-6 leading-tight">The Architecture of Silence</h2>
+                            <p class="text-on-surface-variant text-lg leading-relaxed mb-8 font-body">
+                                Exploring how negative space in digital interfaces can enhance user cognitive performance and emotional well-being. A study on the power of less.
+                            </p>
+                            <div>
+                                <Link to="/post" class="inline-flex items-center text-primary font-semibold border-b-2 border-primary pb-1 group">
+                                    Read the article
+                                    <span class="material-symbols-outlined ml-2 transition-transform group-hover:translate-x-1">arrow_forward</span>
+                                </Link>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                <section class="max-w-7xl mx-auto px-8">
+                    <div class="flex flex-col md:flex-row justify-between items-baseline mb-12">
+                        <h3 class="text-3xl font-bold text-primary">Recent Musings</h3>
+                        <Link to="/archive" class="text-on-surface-variant hover:text-primary transition-colors text-sm font-semibold tracking-wide">View Archive</Link>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                        {[
+                            { title: "The Ink of Intention", date: "October 24, 2024", img: "https://lh3.googleusercontent.com/aida-public/AB6AXuCZGTQs9BPqhcJrDd-HV3RXHSZJtCE0lzHnkPJphyahPsbl3W-kCB5-LAGrfcF64-toFzqAjyHdbYMt1b6tUh1dy6vml1wu_XAR2Af43Wgg_K6LHNqnZit5uB3V1iXBnrANRRT9_dLt1dmk6na8Be6sYBGJ4vQvFa_LDS6DyoMBwWpuJda3YeT7PhXNe0zlrgZuTcNYqEmTf-LlFen424qdW_D0zLmMJbTqh-d2DM6o1m-zPMrrdlS0eTFfVv3ejeKBDbhAudgP0tDa" },
+                            { title: "Shadow & Light", date: "October 18, 2024", img: "https://lh3.googleusercontent.com/aida-public/AB6AXuDDIa4Rlz0DAFKNyPoOS5U1AhUusJAaBZ_AitL40Az0oD4AA1P9Y0VxFhzPsedC1esmm0ftks6xvX1Mz6_Pt6WD72Bzlu2INPtw6Q4wuhXcTcimk--zMi8XKOdtJ8LdlEbuZKrUiVxp3xN56N6Xj1kEAqQ14ETr11P5XsO3JrxobYZHhx4y-2lTAh59R1APh_Uw8IU77_TdbkLNysxLyEOmRigXUR6tPmSy5kkjqeR59kQugMXqMdLB6mWVrzyUHD-Aw9jkdKytCaaz" },
+                            { title: "Digital Minimalism", date: "October 05, 2024", img: "https://lh3.googleusercontent.com/aida-public/AB6AXuB52QORQ4DZqackM5_O2kT2NOAAJNmtFDESO-R2S0Vi2sHVNrG2mXEojB-k0hXLIDEzKqiSAum6163sUezoMJ0y9F3aeAPlea6_r8A0KcI54TGhyE3DEg0Zg15sfrlI48Ou2raLzrdLagnWjnjeuQ_joObIn0wsifYzM_JSJd28NMlZlXZ9gtdzURPSM_DWwZ0G7jMntmzDFQriralyUZ9F28OzTSkmzCSDNq1VQkqnanirmqH6DYeSqHjhP9JKR9P8XGVix9KoQEBt" }
+                        ].map((post, idx) => (
+                            <article key={idx} class="bg-surface-container-lowest p-8 flex flex-col transition-all duration-300 hover:bg-surface-bright shadow-[0_20px_40px_rgba(0,25,21,0.02)]">
+                                <div class="aspect-square bg-surface-container-low mb-6 overflow-hidden">
+                                    <img alt="Post visual" class="w-full h-full object-cover transition-transform duration-500 hover:scale-110" src={post.img}/>
+                                </div>
+                                <time class="text-[10px] uppercase tracking-[0.15em] text-on-surface-variant mb-2">{post.date}</time>
+                                <h4 class="text-xl font-bold text-primary mb-4 leading-snug">{post.title}</h4>
+                                <p class="text-sm text-on-surface-variant leading-relaxed line-clamp-3 mb-6">
+                                    A practical framework for reclaiming your focus and curating your digital consumption with surgical precision.
+                                </p>
+                                <Link to="/post" class="mt-auto text-primary text-xs font-bold tracking-widest uppercase flex items-center group">
+                                    Read More
+                                    <span class="material-symbols-outlined text-sm ml-1 opacity-0 -translate-x-2 transition-all group-hover:opacity-100 group-hover:translate-x-0">chevron_right</span>
+                                </Link>
+                            </article>
+                        ))}
+                    </div>
+                </section>
+            </main>
+        );
+
+        const ArchivePage = () => (
+            <main class="pt-40 pb-24">
+                <div class="max-w-7xl mx-auto px-8 editorial-grid">
+                    <header class="col-start-1 col-span-12 md:col-start-3 md:col-span-8 mb-24">
+                        <span class="font-label text-xs uppercase tracking-[0.2em] text-on-primary-container mb-4 block">Collection</span>
+                        <h1 class="font-headline text-6xl md:text-8xl font-black tracking-tighter text-primary">Writing</h1>
+                        <p class="mt-8 font-body text-xl text-on-surface-variant max-w-2xl leading-relaxed">
+                            An intentional repository of thoughts on design, philosophy, and the quiet pursuit of digital excellence.
+                        </p>
+                    </header>
+                    <div class="col-start-1 col-span-12 md:col-start-3 md:col-span-9 space-y-24">
+                        {[
+                            { year: "2024", entries: [
+                                { title: "The Architecture of Silence", date: "March 12", tags: ["Design", "Philosophy"] },
+                                { title: "Why Borders are the Enemy of Flow", date: "February 28", tags: ["UX Theory", "Minimalism"] },
+                                { title: "The Typography of Intent", date: "January 05", tags: ["Type Design"] }
+                            ]},
+                            { year: "2023", entries: [
+                                { title: "Curating the Digital Self", date: "December 20", tags: ["Identity", "Essay"] },
+                                { title: "Against the Infinite Scroll", date: "October 14", tags: ["Digital Wellbeing"] },
+                                { title: "A Case for Mono-Spacing", date: "August 22", tags: ["Coding", "Aesthetics"] },
+                                { title: "The Ethics of Engagement", date: "June 03", tags: ["Technology"] }
+                            ]}
+                        ].map((section, sIdx) => (
+                            <section key={sIdx} class="flex flex-col md:flex-row gap-8 md:gap-24">
+                                <div class="md:w-32 shrink-0">
+                                    <h2 class="font-headline text-4xl font-bold text-outline-variant/40 sticky top-32">{section.year}</h2>
+                                </div>
+                                <div class="flex-1 space-y-12">
+                                    {section.entries.map((entry, eIdx) => (
+                                        <article key={eIdx} class="group">
+                                            <Link to="/post" class="block">
+                                                <div class="flex flex-col md:flex-row md:items-baseline justify-between mb-2">
+                                                    <h3 class="font-headline text-2xl font-bold text-primary group-hover:text-on-primary-container transition-colors duration-300">{entry.title}</h3>
+                                                    <time class="font-label text-xs tracking-widest text-on-surface-variant uppercase">{entry.date}</time>
+                                                </div>
+                                                <div class="flex flex-wrap gap-3 mt-3">
+                                                    {entry.tags.map((tag, tIdx) => (
+                                                        <span key={tIdx} class="px-3 py-1 bg-surface-container-low text-on-secondary-container text-[10px] font-label uppercase tracking-widest rounded-full">{tag}</span>
+                                                    ))}
+                                                </div>
+                                            </Link>
+                                        </article>
+                                    ))}
+                                </div>
+                            </section>
+                        ))}
+                    </div>
+                </div>
+            </main>
+        );
+
+        const ArticlePage = () => (
+            <main class="pt-32 pb-24">
+                <header class="max-w-7xl mx-auto px-8 mb-16">
+                    <div class="grid grid-cols-12 gap-8">
+                        <div class="col-span-12 md:col-start-3 md:col-span-8 text-center md:text-left">
+                            <div class="text-primary font-label text-xs uppercase tracking-[0.2em] mb-6">Interior Architecture • 12 Min Read</div>
+                            <h1 class="font-headline text-5xl md:text-7xl font-black text-primary leading-[1.1] tracking-tighter mb-8">
+                                The Poetics of Space: Finding Stillness in Modern Brutalism
+                            </h1>
+                            <div class="flex flex-col md:flex-row items-center gap-4 text-on-surface-variant font-body">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-10 h-10 rounded-full overflow-hidden bg-surface-container">
+                                        <img alt="Author" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAaMLomqb_zR9AVBjxwFiCx-MIekBThBQFNHlI6tUf9jF3TojBNSOsGVzcfDJc6wcTeZ6mPhu2811qlR7qCKrv6hR8Bf3n77L4GxHEBW9PMeNzfZbyjaitcQLiyzE6uNU1XYjRfzWvYb3E8aggDIcNI4gCxCoaOITLGeybk1BZbT1IAp-MPAL6X2nWRx57guPbZ_0ubBbH39HuEz54sk5J_iRwVGYJ1uterEuIS-rub4mFG1S_fkX88MmYidvCq0yrGD2wSFspl6hDH"/>
+                                    </div>
+                                    <span class="font-semibold text-on-surface">Elias Thorne</span>
+                                </div>
+                                <span class="hidden md:block w-1.5 h-1.5 rounded-full bg-outline-variant/40"></span>
+                                <time datetime="2024-10-14">October 14, 2024</time>
+                            </div>
+                        </div>
+                    </div>
+                </header>
+                <section class="max-w-7xl mx-auto px-8 mb-24">
+                    <div class="aspect-[21/9] w-full rounded-lg overflow-hidden bg-surface-container-high relative">
+                        <img alt="Brutalist Interior" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDjmL1cLbAtMgiqPe1mjVU7tnpWO8aeGolrdUoIF_qtH9w-iVSIgoX6PNN6D2RKYe8vLR4ODL6jRFG-MqIH3DVuzwgTuyY4Nv8ptrWqYv9QTpofBSaHyua50ysmjIURkkAKpHrq765KXsKbfrD1k6XVt5IXUtTvTWdrJK17j9L8xV-wT4mxnYfv9mxMJRYu-m1b8n7OF1JR8Oy0OskdCZEMgWnd8jqYGtYsHlcPgKJ4PJGepSWm_vIZUBOxju7ee9kDvfD2aIi4HRo7"/>
+                        <div class="absolute inset-0 bg-gradient-to-t from-primary/10 to-transparent"></div>
+                    </div>
+                    <p class="mt-4 text-on-surface-variant text-sm font-body italic text-center md:text-left">
+                        The interplay of raw concrete and natural light in the Ando Pavilion. Photograph by Julian Hesse.
+                    </p>
+                </section>
+                <article class="max-w-7xl mx-auto px-8">
+                    <div class="grid grid-cols-12 gap-8">
+                        <div class="col-span-12 md:col-start-3 md:col-span-8 space-y-12">
+                            <p class="font-body text-xl leading-relaxed text-on-surface">
+                                In an era defined by digital cacophony, the architectural movement of Brutalism is undergoing a spiritual renaissance. Long maligned as "cold" or "impersonal," the raw honesty of exposed concrete and geometric purity offers a sanctuary for the modern mind.
+                            </p>
+                            <h2 class="font-headline text-3xl font-bold text-primary tracking-tight mt-16 mb-6">The Weight of Silence</h2>
+                            <p class="font-body text-lg leading-[1.8] text-on-surface-variant">
+                                Brutalism, derived from the French béton brut (raw concrete), is often misunderstood as a celebration of harshness. However, when one stands within the vaulted silence of a well-crafted concrete structure, the sensation is one of profound protection.
+                            </p>
+                            <blockquote class="relative py-8 px-12 bg-surface-container-low border-l-4 border-primary rounded-r-lg">
+                                <span class="material-symbols-outlined absolute top-4 left-4 text-primary/20 text-4xl">format_quote</span>
+                                <p class="font-headline italic text-2xl text-primary leading-snug">
+                                    "Architecture is the learned game, correct and magnificent, of forms assembled in the light."
+                                </p>
+                                <cite class="block mt-4 font-label text-sm uppercase tracking-wider text-on-surface-variant not-italic">— Le Corbusier</cite>
+                            </blockquote>
+                        </div>
+                    </div>
+                </article>
+                <section class="mt-32 bg-surface-container-low py-24">
+                    <div class="max-w-7xl mx-auto px-8">
+                        <div class="flex justify-between items-end mb-12">
+                            <div>
+                                <span class="font-label text-xs uppercase tracking-[0.3em] text-primary/60">Explore more</span>
+                                <h2 class="font-headline text-4xl font-black text-primary tracking-tighter mt-2">Continue Reading</h2>
+                            </div>
+                            <Link to="/archive" class="hidden md:flex items-center gap-2 font-label text-xs uppercase tracking-widest text-primary border-b-2 border-primary/20 hover:border-primary pb-1 transition-all">
+                                View Archive <span class="material-symbols-outlined text-sm">north_east</span>
+                            </Link>
+                        </div>
+                        <div class="grid md:grid-cols-2 gap-12">
+                            <div class="group cursor-pointer">
+                                <div class="aspect-[16/10] overflow-hidden rounded-lg bg-surface-container mb-6 relative">
+                                    <img alt="Post 1" class="w-full h-full object-cover group-hover:scale-[1.03] transition-transform duration-700" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAAsivO3WwplYhSsdDbNCIIZ6MwzNA9ToCkKXKj4zHcQl1e-Q3GIgM-xdI5ioJaZeQIaQEUKr6xqwYKwYD4AjWUSYVxBHYcKOcF3MBgGuZ0LGUNSP0ZSq15cUgKtvbNNvyf_9gMdn4qX7FFNiSmxRB95YiL6cNzWimPL-8qhS3LHMoJ7OMYT_dGHOZ2MAGhhgR0FD5NsZm_kufOcufoyg8k8s6ykSbwDbmu4MEmPg6PsgnTHi71x494rbuqD_VPisgwy8xS5K1f6W2Y"/>
+                                </div>
+                                <div class="space-y-3">
+                                    <span class="font-label text-xs font-bold uppercase tracking-widest text-primary">Theory</span>
+                                    <h3 class="font-headline text-2xl font-bold text-primary">The Weight of Shadows in Contemporary Zen Design</h3>
+                                </div>
+                            </div>
+                            <div class="group cursor-pointer">
+                                <div class="aspect-[16/10] overflow-hidden rounded-lg bg-surface-container mb-6 relative">
+                                    <img alt="Post 2" class="w-full h-full object-cover group-hover:scale-[1.03] transition-transform duration-700" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBX6RghY1v64fxXdy2jF0tNeVGHYMAAsjzXb7RMnMg6gK6VZxP87pavzcEI66yEO70TF8EWBuIOEuTga6XSmz24LiSgTkoqfZIqyX_ldKAhfIApUwDXhEFoypfYLLnoNjZJPFVD3_PcPnDKSIdwBt14QXo5kos8xbuvOziXI7C6QSqpDumBjyoPuZXEP3v5LYviB5ZXXQ0xaz1SxRjQKxevrfxd9brK0oS3866qdE83wQ5nyp222jjnFWYrrunwMQNmS0WA6y84nwBc"/>
+                                </div>
+                                <div class="space-y-3">
+                                    <span class="font-label text-xs font-bold uppercase tracking-widest text-primary">Urbanism</span>
+                                    <h3 class="font-headline text-2xl font-bold text-primary">Adaptive Reuse: Breathing Life into Industrial Skeletons</h3>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </main>
+        );
+
+        const AboutPage = () => (
+            <main class="pt-40 pb-20">
+                <section class="max-w-7xl mx-auto px-8">
+                    <div class="editorial-grid gap-12 lg:gap-24 items-start">
+                        <div class="col-span-12 lg:col-span-5 relative">
+                            <div class="aspect-[4/5] bg-surface-container-high overflow-hidden rounded-sm">
+                                <img alt="Portrait" class="w-full h-full object-cover mix-blend-multiply opacity-90 grayscale" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBADWqG908aXB6l1UcBaYJlBEwn-J5rrY5xdYfb5-FcVBaBA5P10BPbUptZpKlYAMA18aaZ9NMhC8P6zPbB-3DC7Xlz_R2k1iS3WaHLF-g_AHhsxnlSQX4zHpSMZPqHxgkpg6O7jXDigfF7-IWjEEp2s4vSmu8vxm625Q3PRdUXCNB3OX7WX2lqOiAD2iW0eHB300HbreUEd1xSP96WHGKm0zsl6KIcyQs8K0VNifGQc3Cpl6vyN3pk6KupDNeAzTeWLHqX9t68znBE"/>
+                            </div>
+                            <div class="absolute -bottom-6 -right-6 w-32 h-32 bg-primary-container/5 -z-10"></div>
+                        </div>
+                        <div class="col-span-12 lg:col-span-7 pt-4">
+                            <span class="text-[0.75rem] font-bold uppercase tracking-[0.2em] text-primary-container mb-6 block font-label">The Person Behind the Pen</span>
+                            <h1 class="text-5xl lg:text-7xl font-black text-primary leading-[1.1] tracking-tighter mb-10 font-headline">
+                                Crafting narratives in the space between <span class="italic font-normal">words</span>.
+                            </h1>
+                            <div class="space-y-8 text-lg leading-relaxed text-on-surface-variant font-body max-w-2xl">
+                                <p>I am a designer and writer currently based in the quiet corners of the Pacific Northwest. My work is defined by a pursuit of "The Silent Curator"—the idea that the most impactful experiences are those that don't shout for attention, but rather provide a calm, intentional space for discovery.</p>
+                                <p>With a background in architectural philosophy and digital product design, I bridge the gap between physical permanence and digital fluidity. I believe that every interface should feel as tactile as heavy-stock paper and as intuitive as a well-worn path.</p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                <section class="max-w-7xl mx-auto px-8 mt-32">
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                        <div class="col-span-1 md:col-span-2 bg-surface-container-low p-10 rounded-lg">
+                            <div class="flex items-center gap-3 mb-8">
+                                <span class="material-symbols-outlined text-primary">interests</span>
+                                <h2 class="text-2xl font-bold font-headline text-primary">Interests</h2>
+                            </div>
+                            <div class="grid grid-cols-2 md:grid-cols-3 gap-6">
+                                <div class="space-y-2">
+                                    <p class="font-bold font-label text-xs uppercase tracking-widest text-primary-container/60">Design</p>
+                                    <p class="text-on-surface font-body">Editorial Layouts</p>
+                                    <p class="text-on-surface font-body">Type Specimen</p>
+                                </div>
+                                <div class="space-y-2">
+                                    <p class="font-bold font-label text-xs uppercase tracking-widest text-primary-container/60">Technology</p>
+                                    <p class="text-on-surface font-body">Creative Coding</p>
+                                    <p class="text-on-surface font-body">Digital Privacy</p>
+                                </div>
+                                <div class="space-y-2">
+                                    <p class="font-bold font-label text-xs uppercase tracking-widest text-primary-container/60">Culture</p>
+                                    <p class="text-on-surface font-body">Film Photography</p>
+                                    <p class="text-on-surface font-body">Slow Living</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-span-1 bg-primary text-on-primary p-10 rounded-lg flex flex-col justify-between">
+                            <div>
+                                <div class="flex items-center gap-3 mb-8">
+                                    <span class="material-symbols-outlined text-on-primary-container">menu_book</span>
+                                    <h2 class="text-2xl font-bold font-headline">Currently Reading</h2>
+                                </div>
+                                <div class="space-y-6">
+                                    <div>
+                                        <h3 class="text-xl font-headline italic">The Architecture of Happiness</h3>
+                                        <p class="text-on-primary-container text-sm font-label mt-1">Alain de Botton</p>
+                                    </div>
+                                    <div class="h-px bg-white/10 w-full"></div>
+                                    <p class="text-on-primary/80 font-body text-sm leading-relaxed">How our surroundings influence our moods and how architecture speaks to our inner lives.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </main>
+        );
+
+        // --- App Entry Point ---
+
+        const App = () => {
+            const ScrollToTop = () => {
+                const { pathname } = useLocation();
+                useEffect(() => { window.scrollTo(0, 0); }, [pathname]);
+                return null;
+            };
+
+            return (
+                <MemoryRouter>
+                    <ScrollToTop />
+                    <TopNavBar />
+                    <Routes>
+                        <Route path="/" element={<HomePage />} />
+                        <Route path="/blog" element={<ArchivePage />} />
+                        <Route path="/archive" element={<ArchivePage />} />
+                        <Route path="/about" element={<AboutPage />} />
+                        <Route path="/post" element={<ArticlePage />} />
+                    </Routes>
+                    <Footer />
+                </MemoryRouter>
+            );
+        };
+
+        const container = document.getElementById('root');
+        const root = createRoot(container);
+        root.render(<App />);
+    </script>
+</body>
+</html>
