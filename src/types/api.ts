@@ -140,7 +140,7 @@ export interface CreatePostInput {
   coverImage?: string;
   categoryId?: string;
   tags?: string[];
-  status?: 'draft' | 'published';
+  status?: PostStatus;
 }
 
 export interface UpdatePostInput extends Partial<CreatePostInput> {

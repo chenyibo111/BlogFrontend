@@ -104,10 +104,10 @@ export const mockManagementApiService: ManagementApiService = {
       authorId: '1',
       categories: [],
       views: 0,
-      publishedAt: input.status === 'published' ? new Date().toISOString() : undefined,
+      publishedAt: input.status === 'PUBLISHED' ? new Date().toISOString() : undefined,
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
-      status: (input.status?.toUpperCase() || 'DRAFT') as 'DRAFT' | 'PUBLISHED' | 'SCHEDULED' | 'ARCHIVED',
+      status: input.status || 'DRAFT',
       category: 'Uncategorized',
       readTime: Math.ceil(input.content.length / 1000) || 5,
     };
@@ -126,7 +126,7 @@ export const mockManagementApiService: ManagementApiService = {
     const updated: Post = {
       ...currentPost,
       ...input,
-      status: input.status ? (input.status.toUpperCase() as 'DRAFT' | 'PUBLISHED' | 'SCHEDULED' | 'ARCHIVED') : currentPost.status,
+      status: input.status || currentPost.status,
       updatedAt: new Date().toISOString(),
     };
     
