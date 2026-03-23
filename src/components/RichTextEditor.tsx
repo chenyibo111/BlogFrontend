@@ -77,7 +77,7 @@ export function RichTextEditor({ content, onChange, placeholder = 'Write somethi
     if (!editor || !file) return;
 
     // Validate file type
-    if (!UPLOAD_CONFIG.allowedTypes.includes(file.type)) {
+    if (!UPLOAD_CONFIG.allowedTypes.includes(file.type as typeof UPLOAD_CONFIG.allowedTypes[number])) {
       showToast.error('Please upload a valid image file (jpg, png, gif, webp)');
       return;
     }

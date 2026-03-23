@@ -8,7 +8,7 @@ import type {
   ManagementApiService,
 } from '../types/management';
 import { tokenStorage, authApiService } from './authApi';
-import { API_BASE_URL, UPLOAD_CONFIG } from '../config/api';
+import { API_BASE_URL } from '../config/api';
 
 // Fetch wrapper with auth and token refresh
 async function fetchWithAuth(url: string, options?: RequestInit, retry = true): Promise<Response> {
@@ -71,13 +71,15 @@ const mockPosts: Post[] = [
     content: '<p>Full article content...</p>',
     coverImage: 'https://lh3.googleusercontent.com/aida-public/AB6AXuCiXhVcucyPsaXuVbFrQlGNKohN2cNTa6PJynarWSuRDcYxNK0T7F_-YKPYOO70R1EN-bfhWkH5x_R3M_mMU7TJInDuBleohDcsge7D35vez1xpwq4Sz6-ACvZmuvz4daGgj5HMxvyw_KvN2aT3YabaiKWrcWF6tMpudp3en9RigERXnJSwtuyi1w-pCZs8CzoakoZvdyxAkwn0mlvZkVxdbHu02fddbIqwW5b69enQbN9wfAdoVgKfA--sh1sdpRc2I9JsOmJo_DQB',
     author: { id: '1', name: 'Elias Thorne', avatar: '' },
-    category: 'Design',
-    tags: ['Design', 'Philosophy'],
+    authorId: '1',
+    categories: [],
+    views: 100,
     publishedAt: '2024-03-12T00:00:00Z',
     createdAt: '2024-03-12T00:00:00Z',
     updatedAt: '2024-03-12T00:00:00Z',
-    readTime: 8,
     status: 'PUBLISHED',
+    category: 'Design',
+    readTime: 8,
   },
 ];
 
@@ -99,13 +101,15 @@ export const mockManagementApiService: ManagementApiService = {
       content: input.content,
       coverImage: input.coverImage,
       author: { id: '1', name: 'Elias Thorne', avatar: '' },
-      category: input.categoryId || 'Uncategorized',
-      tags: input.tags || [],
-      publishedAt: input.publishedAt || new Date().toISOString(),
+      authorId: '1',
+      categories: [],
+      views: 0,
+      publishedAt: input.status === 'published' ? new Date().toISOString() : undefined,
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
-      readTime: Math.ceil(input.content.length / 1000) || 5,
       status: (input.status?.toUpperCase() || 'DRAFT') as 'DRAFT' | 'PUBLISHED' | 'SCHEDULED' | 'ARCHIVED',
+      category: 'Uncategorized',
+      readTime: Math.ceil(input.content.length / 1000) || 5,
     };
     
     mockPosts.unshift(newPost);
