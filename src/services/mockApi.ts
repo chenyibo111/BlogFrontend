@@ -20,10 +20,6 @@ const mockAuthors: Author[] = [
     name: 'Elias Thorne',
     avatar: 'https://lh3.googleusercontent.com/aida-public/AB6AXuAaMLomqb_zR9AVBjxwFiCx-MIekBThBQFNHlI6tUf9jF3TojBNSOsGVzcfDJc6wcTeZ6mPhu2811qlR7qCKrv6hR8Bf3n77L4GxHEBW9PMeNzfZbyjaitcQLiyzE6uNU1XYjRfzWvYb3E8aggDIcNI4gCxCoaOITLGeybk1BZbT1IAp-MPAL6X2nWRx57guPbZ_0ubBbH39HuEz54sk5J_iRwVGYJ1uterEuIS-rub4mFG1S_fkX88MmYidvCq0yrGD2wSFspl6hDH',
     bio: 'Designer and writer focused on minimal aesthetics.',
-    social: {
-      twitter: '@eliasthorne',
-      website: 'https://eliasthorne.com',
-    },
   },
 ];
 
@@ -50,13 +46,16 @@ const mockPosts: Post[] = [
     content: 'Full article content here...',
     coverImage: 'https://lh3.googleusercontent.com/aida-public/AB6AXuCiXhVcucyPsaXuVbFrQlGNKohN2cNTa6PJynarWSuRDcYxNK0T7F_-YKPYOO70R1EN-bfhWkH5x_R3M_mMU7TJInDuBleohDcsge7D35vez1xpwq4Sz6-ACvZmuvz4daGgj5HMxvyw_KvN2aT3YabaiKWrcWF6tMpudp3en9RigERXnJSwtuyi1w-pCZs8CzoakoZvdyxAkwn0mlvZkVxdbHu02fddbIqwW5b69enQbN9wfAdoVgKfA--sh1sdpRc2I9JsOmJo_DQB',
     author: mockAuthors[0],
-    category: 'Design',
-    tags: ['Design', 'Philosophy'],
+    authorId: '1',
+    categories: [mockCategories[0], mockCategories[1]],
+    views: 150,
     publishedAt: '2024-03-12T00:00:00Z',
     createdAt: '2024-03-12T00:00:00Z',
     updatedAt: '2024-03-12T00:00:00Z',
-    readTime: 8,
     status: 'PUBLISHED',
+    // Frontend computed fields
+    category: 'Design',
+    readTime: 8,
   },
   {
     id: 2,
@@ -65,13 +64,15 @@ const mockPosts: Post[] = [
     excerpt: 'A practical framework for reclaiming your focus and curating your digital consumption.',
     coverImage: 'https://lh3.googleusercontent.com/aida-public/AB6AXuCZGTQs9BPqhcJrDd-HV3RXHSZJtCE0lzHnkPJphyahPsbl3W-kCB5-LAGrfcF64-toFzqAjyHdbYMt1b6tUh1dy6vml1wu_XAR2Af43Wgg_K6LHNqnZit5uB3V1iXBnrANRRT9_dLt1dmk6na8Be6sYBGJ4vQvFa_LDS6DyoMBwWpuJda3YeT7PhXNe0zlrgZuTcNYqEmTf-LlFen424qdW_D0zLmMJbTqh-d2DM6o1m-zPMrrdlS0eTFfVv3ejeKBDbhAudgP0tDa',
     author: mockAuthors[0],
-    category: 'Design',
-    tags: ['Design', 'Philosophy'],
+    authorId: '1',
+    categories: [mockCategories[0], mockCategories[1]],
+    views: 120,
     publishedAt: '2024-10-24T00:00:00Z',
     createdAt: '2024-10-24T00:00:00Z',
     updatedAt: '2024-10-24T00:00:00Z',
-    readTime: 6,
     status: 'PUBLISHED',
+    category: 'Design',
+    readTime: 6,
   },
   {
     id: 3,
@@ -80,13 +81,15 @@ const mockPosts: Post[] = [
     excerpt: 'Understanding the delicate balance between light and shadow in visual storytelling.',
     coverImage: 'https://lh3.googleusercontent.com/aida-public/AB6AXuDDIa4Rlz0DAFKNyPoOS5U1AhUusJAaBZ_AitL40Az0oD4AA1P9Y0VxFhzPsedC1esmm0ftks6xvX1Mz6_Pt6WD72Bzlu2INPtw6Q4wuhXcTcimk--zMi8XKOdtJ8LdlEbuZKrUiVxp3xN56N6Xj1kEAqQ14ETr11P5XsO3JrxobYZHhx4y-2lTAh59R1APh_Uw8IU77_TdbkLNysxLyEOmRigXUR6tPmSy5kkjqeR59kQugMXqMdLB6mWVrzyUHD-Aw9jkdKytCaaz',
     author: mockAuthors[0],
-    category: 'Photography',
-    tags: ['Photography', 'Art'],
+    authorId: '1',
+    categories: [mockCategories[3]],
+    views: 95,
     publishedAt: '2024-10-18T00:00:00Z',
     createdAt: '2024-10-18T00:00:00Z',
     updatedAt: '2024-10-18T00:00:00Z',
-    readTime: 5,
     status: 'PUBLISHED',
+    category: 'Photography',
+    readTime: 5,
   },
   {
     id: 4,
@@ -95,13 +98,15 @@ const mockPosts: Post[] = [
     excerpt: 'A practical framework for reclaiming your focus and curating your digital consumption.',
     coverImage: 'https://lh3.googleusercontent.com/aida-public/AB6AXuB52QORQ4DZqackM5_O2kT2NOAAJNmtFDESO-R2S0Vi2sHVNrG2mXEojB-k0hXLIDEzKqiSAum6163sUezoMJ0y9F3aeAPlea6_r8A0KcI54TGhyE3DEg0Zg15sfrlI48Ou2raLzrdLagnWjnjeuQ_joObIn0wsifYzM_JSJd28NMlZlXZ9gtdzURPSM_DWwZ0G7jMntmzDFQriralyUZ9F28OzTSkmzCSDNq1VQkqnanirmqH6DYeSqHjhP9JKR9P8XGVix9KoQEBt',
     author: mockAuthors[0],
-    category: 'Technology',
-    tags: ['Technology', 'Lifestyle'],
+    authorId: '1',
+    categories: [mockCategories[2]],
+    views: 180,
     publishedAt: '2024-10-05T00:00:00Z',
     createdAt: '2024-10-05T00:00:00Z',
     updatedAt: '2024-10-05T00:00:00Z',
-    readTime: 7,
     status: 'PUBLISHED',
+    category: 'Technology',
+    readTime: 7,
   },
 ];
 
@@ -144,13 +149,10 @@ export const mockApiService: ApiService = {
     let filtered = [...mockPosts];
     
     if (params?.category) {
-      filtered = filtered.filter(p => p.category.toLowerCase() === params.category!.toLowerCase());
-    }
-    if (params?.tag) {
-      filtered = filtered.filter(p => p.tags?.some(t => t.toLowerCase().includes(params.tag!.toLowerCase())));
+      filtered = filtered.filter(p => p.category?.toLowerCase() === params.category!.toLowerCase());
     }
     if (params?.year) {
-      filtered = filtered.filter(p => new Date(p.publishedAt).getFullYear() === params.year);
+      filtered = filtered.filter(p => p.publishedAt && new Date(p.publishedAt).getFullYear() === params.year);
     }
     if (params?.search) {
       const query = params.search.toLowerCase();
@@ -257,6 +259,7 @@ export const mockApiService: ApiService = {
   async getArchive(): Promise<ArchiveYear[]> {
     await delay(200);
     const postsByYear = mockPosts.reduce((acc, post) => {
+      if (!post.publishedAt) return acc;
       const year = new Date(post.publishedAt).getFullYear();
       if (!acc[year]) acc[year] = [];
       acc[year].push(post);

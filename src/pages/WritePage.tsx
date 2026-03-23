@@ -6,6 +6,7 @@ import { usePostBySlug } from '../hooks/useApi';
 import { RichTextEditor } from '../components/RichTextEditor';
 import { Button, Input, Textarea, showToast, ToastProvider } from '../components/ui';
 import { getImageUrl } from '../utils/imageHelper';
+import { SERVER_BASE_URL } from '../config/api';
 
 interface PostFormData {
   title: string;
@@ -77,7 +78,6 @@ export function WritePage() {
       return;
     }
     
-    const apiStatus = status.toLowerCase() as 'draft' | 'published';
     setIsSubmitting(true);
     const toastId = showToast.loading(status === 'DRAFT' ? 'Saving draft...' : 'Publishing...');
     
@@ -87,14 +87,14 @@ export function WritePage() {
         await updatePost({
           id: existingPost.id,
           ...formData,
-          status: apiStatus,
+          status,
         });
         showToast.dismiss(toastId);
         showToast.success(status === 'DRAFT' ? 'Draft updated!' : 'Post updated!');
         navigate(`/post/${existingPost.id}`);
       } else {
         // Create new post
-        const newPost = await createPost({ ...formData, status: apiStatus });
+        const newPost = await createPost({ ...formData, status });
         showToast.dismiss(toastId);
         showToast.success(status === 'DRAFT' ? 'Draft saved!' : 'Post published!');
         navigate(`/post/${newPost.id}`);
@@ -129,8 +129,7 @@ export function WritePage() {
 
     try {
       const result = await uploadImage(file);
-      const apiBaseUrl = import.meta.env.VITE_API_BASE_URL?.replace('/api', '') || 'http://localhost:3000';
-      const fullUrl = result.url.startsWith('http') ? result.url : `${apiBaseUrl}${result.url}`;
+      const fullUrl = result.url.startsWith('http') ? result.url : `${SERVER_BASE_URL}${result.url}`;
       
       setFormData({ ...formData, coverImage: fullUrl });
       setCoverImagePreview(fullUrl);

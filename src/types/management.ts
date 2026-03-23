@@ -1,5 +1,5 @@
 // Blog writing and management types
-import type { Post, PaginationParams, PaginatedResponse } from './api';
+import type { Post, PaginationParams, PaginatedResponse, PostStatus } from './api';
 
 export interface PostInput {
   title: string;
@@ -9,7 +9,7 @@ export interface PostInput {
   coverImage?: string;
   categoryId?: string;
   tags?: string[];
-  status: 'draft' | 'published' | 'scheduled';
+  status?: PostStatus;
   publishedAt?: string;
   seo?: SeoMetadata;
 }

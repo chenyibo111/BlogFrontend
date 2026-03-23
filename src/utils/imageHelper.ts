@@ -1,6 +1,5 @@
 // Image URL helper function
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000/api';
-const BASE_URL = API_BASE_URL.replace('/api', '');
+import { SERVER_BASE_URL } from '../config/api';
 
 export function getImageUrl(url: string | undefined | null): string {
   if (!url) return '';
@@ -12,11 +11,11 @@ export function getImageUrl(url: string | undefined | null): string {
   
   // If starts with /, prepend base URL
   if (url.startsWith('/')) {
-    return `${BASE_URL}${url}`;
+    return `${SERVER_BASE_URL}${url}`;
   }
   
   // Otherwise, assume it's already a relative path
-  return `${BASE_URL}/${url}`;
+  return `${SERVER_BASE_URL}/${url}`;
 }
 
 export function getPlaceholderImage(): string {

@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
 import { Button, Input, Textarea, showToast, ToastProvider } from '../components/ui';
 import { getImageUrl } from '../utils/imageHelper';
+import { API_BASE_URL } from '../config/api';
 
 export function ProfilePage() {
   const { user, updateProfile, logout, isLoading } = useAuth();
@@ -38,7 +39,7 @@ export function ProfilePage() {
 
     try {
       const token = localStorage.getItem('access_token');
-      const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/auth/avatar`, {
+      const response = await fetch(`${API_BASE_URL}/auth/avatar`, {
         method: 'POST',
         headers: {
           Authorization: `Bearer ${token}`,
