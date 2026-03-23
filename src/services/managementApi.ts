@@ -8,8 +8,7 @@ import type {
   ManagementApiService,
 } from '../types/management';
 import { tokenStorage, authApiService } from './authApi';
-
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000/api';
+import { API_BASE_URL, UPLOAD_CONFIG } from '../config/api';
 
 // Fetch wrapper with auth and token refresh
 async function fetchWithAuth(url: string, options?: RequestInit, retry = true): Promise<Response> {

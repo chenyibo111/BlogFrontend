@@ -5,6 +5,8 @@ import Link from '@tiptap/extension-link';
 import Placeholder from '@tiptap/extension-placeholder';
 import type { Editor } from '@tiptap/react';
 import { useEffect, useState, useRef } from 'react';
+import { showToast } from './ui';
+import { SERVER_BASE_URL, UPLOAD_CONFIG } from '../config/api';
 
 interface RichTextEditorProps {
   content: string;
@@ -74,14 +76,15 @@ export function RichTextEditor({ content, onChange, placeholder = 'Write somethi
   const handleImageUpload = async (file: File) => {
     if (!editor || !file) return;
 
-    // Validate file
-    if (!file.type.startsWith('image/')) {
-      alert('Please upload an image file');
+    // Validate file type
+    if (!UPLOAD_CONFIG.allowedTypes.includes(file.type)) {
+      showToast.error('Please upload a valid image file (jpg, png, gif, webp)');
       return;
     }
 
-    if (file.size > 5 * 1024 * 1024) {
-      alert('Image size should be less than 5MB');
+    // Validate file size
+    if (file.size > UPLOAD_CONFIG.maxFileSize) {
+      showToast.error(`Image size should be less than ${UPLOAD_CONFIG.maxFileSize / 1024 / 1024}MB`);
       return;
     }
 
@@ -91,7 +94,7 @@ export function RichTextEditor({ content, onChange, placeholder = 'Write somethi
       // Get token from localStorage (use same key as authApi.ts)
       const token = localStorage.getItem('access_token');
       if (!token) {
-        alert('Please login first');
+        showToast.error('Please login first');
         return;
       }
 
@@ -99,8 +102,7 @@ export function RichTextEditor({ content, onChange, placeholder = 'Write somethi
       const formData = new FormData();
       formData.append('file', file);
 
-      const apiBaseUrl = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000';
-      const response = await fetch(`${apiBaseUrl}/api/upload`, {
+      const response = await fetch(`${SERVER_BASE_URL}/api/upload`, {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${token}`,
@@ -118,9 +120,10 @@ export function RichTextEditor({ content, onChange, placeholder = 'Write somethi
 
       // Insert image into editor
       editor.chain().focus().setImage({ src: imageUrl }).run();
+      showToast.success('Image uploaded successfully');
     } catch (error) {
       console.error('Upload error:', error);
-      alert(error instanceof Error ? error.message : 'Upload failed');
+      showToast.error(error instanceof Error ? error.message : 'Upload failed');
     } finally {
       setIsUploading(false);
     }

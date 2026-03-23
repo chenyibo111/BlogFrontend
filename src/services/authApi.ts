@@ -10,13 +10,12 @@ import type {
   ChangePasswordInput,
   UpdateProfileInput,
 } from '../types/auth';
+import { API_BASE_URL, TOKEN_KEYS } from '../config/api';
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000/api';
-
-// Token storage keys
-const ACCESS_TOKEN_KEY = 'access_token';
-const REFRESH_TOKEN_KEY = 'refresh_token';
-const TOKEN_EXPIRY_KEY = 'token_expiry';
+// Token storage keys (use centralized config)
+const ACCESS_TOKEN_KEY = TOKEN_KEYS.accessToken;
+const REFRESH_TOKEN_KEY = TOKEN_KEYS.refreshToken;
+const TOKEN_EXPIRY_KEY = TOKEN_KEYS.tokenExpiry;
 
 // Token management
 export const tokenStorage = {

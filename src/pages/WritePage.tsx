@@ -6,6 +6,7 @@ import { usePostBySlug } from '../hooks/useApi';
 import { RichTextEditor } from '../components/RichTextEditor';
 import { Button, Input, Textarea, showToast, ToastProvider } from '../components/ui';
 import { getImageUrl } from '../utils/imageHelper';
+import { SERVER_BASE_URL } from '../config/api';
 
 interface PostFormData {
   title: string;
@@ -129,8 +130,7 @@ export function WritePage() {
 
     try {
       const result = await uploadImage(file);
-      const apiBaseUrl = import.meta.env.VITE_API_BASE_URL?.replace('/api', '') || 'http://localhost:3000';
-      const fullUrl = result.url.startsWith('http') ? result.url : `${apiBaseUrl}${result.url}`;
+      const fullUrl = result.url.startsWith('http') ? result.url : `${SERVER_BASE_URL}${result.url}`;
       
       setFormData({ ...formData, coverImage: fullUrl });
       setCoverImagePreview(fullUrl);

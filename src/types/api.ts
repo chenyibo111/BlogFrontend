@@ -27,7 +27,7 @@ export interface PaginatedResponse<T> {
 
 // ==================== Domain Types ====================
 
-// Blog post
+// Blog post (matches backend Prisma model)
 export interface Post {
   id: number;
   slug: string;
@@ -35,19 +35,22 @@ export interface Post {
   excerpt?: string;
   content?: string;
   coverImage?: string;
+  status: PostStatus;
+  authorId: string;
   author: Author;
-  category: string;
-  tags?: string[];
-  publishedAt: string;
+  categories: Category[];  // Backend uses many-to-many relation
+  views: number;
+  publishedAt?: string;
   createdAt: string;
   updatedAt: string;
-  readTime: number; // in minutes
-  status: PostStatus;
+  // Frontend computed fields (not from backend)
+  category?: string;  // First category name for display
+  readTime?: number;  // Calculated from content
 }
 
 export type PostStatus = 'DRAFT' | 'PUBLISHED' | 'SCHEDULED' | 'ARCHIVED';
 
-// Tag
+// Tag (placeholder - backend doesn't have tags yet)
 export interface Tag {
   id: string;
   slug: string;
@@ -55,26 +58,28 @@ export interface Tag {
   postCount: number;
 }
 
-// Author
+// Author (matches backend User public fields)
 export interface Author {
   id: string;
   name: string;
+  email?: string;
   avatar?: string;
   bio?: string;
-  social?: {
-    twitter?: string;
-    github?: string;
-    website?: string;
-  };
+  role?: 'ADMIN' | 'EDITOR' | 'AUTHOR';
+  createdAt?: string;
+  updatedAt?: string;
 }
 
-// Category
+// Category (matches backend Prisma model)
 export interface Category {
   id: string;
   slug: string;
   name: string;
   description?: string;
-  postCount: number;
+  createdAt?: string;
+  updatedAt?: string;
+  // Frontend computed
+  postCount?: number;
 }
 
 // Comment
