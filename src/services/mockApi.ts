@@ -56,7 +56,7 @@ const mockPosts: Post[] = [
     createdAt: '2024-03-12T00:00:00Z',
     updatedAt: '2024-03-12T00:00:00Z',
     readTime: 8,
-    status: 'published',
+    status: 'PUBLISHED',
   },
   {
     id: 2,
@@ -71,7 +71,7 @@ const mockPosts: Post[] = [
     createdAt: '2024-10-24T00:00:00Z',
     updatedAt: '2024-10-24T00:00:00Z',
     readTime: 6,
-    status: 'published',
+    status: 'PUBLISHED',
   },
   {
     id: 3,
@@ -86,7 +86,7 @@ const mockPosts: Post[] = [
     createdAt: '2024-10-18T00:00:00Z',
     updatedAt: '2024-10-18T00:00:00Z',
     readTime: 5,
-    status: 'published',
+    status: 'PUBLISHED',
   },
   {
     id: 4,
@@ -101,7 +101,7 @@ const mockPosts: Post[] = [
     createdAt: '2024-10-05T00:00:00Z',
     updatedAt: '2024-10-05T00:00:00Z',
     readTime: 7,
-    status: 'published',
+    status: 'PUBLISHED',
   },
 ];
 
@@ -147,7 +147,7 @@ export const mockApiService: ApiService = {
       filtered = filtered.filter(p => p.category.toLowerCase() === params.category!.toLowerCase());
     }
     if (params?.tag) {
-      filtered = filtered.filter(p => p.tags.some(t => t.toLowerCase().includes(params.tag!.toLowerCase())));
+      filtered = filtered.filter(p => p.tags?.some(t => t.toLowerCase().includes(params.tag!.toLowerCase())));
     }
     if (params?.year) {
       filtered = filtered.filter(p => new Date(p.publishedAt).getFullYear() === params.year);

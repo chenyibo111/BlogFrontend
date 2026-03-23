@@ -2,6 +2,7 @@ import { Link, useParams, useNavigate } from 'react-router-dom';
 import { usePostById, useRelatedPosts } from '../hooks/useApi';
 import { useAuth } from '../hooks/useAuth';
 import { getImageUrl } from '../utils/imageHelper';
+import { sanitizeHtml } from '../utils/sanitize';
 
 export function ArticlePage() {
   const { id } = useParams<{ id: string }>();
@@ -9,8 +10,7 @@ export function ArticlePage() {
   const { user } = useAuth();
   
   // Parse ID - could be numeric ID or slug
-  const numericId = id && !isNaN(Number(id)) ? Number(id) : null;
-  const slugId = id && isNaN(Number(id)) ? id : null;
+  // Currently using id directly for API call
   
   const { data: post, loading, error } = usePostById(id || '0');
   const { data: relatedPosts } = useRelatedPosts(post?.id || 0, 2);
@@ -130,10 +130,10 @@ export function ArticlePage() {
       <article className="max-w-7xl mx-auto px-8">
         <div className="grid grid-cols-12 gap-8">
           <div className="col-span-12 md:col-start-3 md:col-span-8">
-            {/* Render article content as HTML */}
+            {/* Render article content as HTML (sanitized to prevent XSS) */}
             <div 
               className="prose prose-emerald max-w-none"
-              dangerouslySetInnerHTML={{ __html: post.content || '' }}
+              dangerouslySetInnerHTML={{ __html: sanitizeHtml(post.content || '') }}
             />
           </div>
         </div>

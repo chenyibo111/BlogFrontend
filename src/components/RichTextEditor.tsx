@@ -47,7 +47,7 @@ export function RichTextEditor({ content, onChange, placeholder = 'Write somethi
       attributes: {
         class: 'prose prose-emerald max-w-none focus:outline-none min-h-[400px] px-4 py-3',
       },
-      handleDrop: (view, event, slice, moved) => {
+      handleDrop: (_view, event, _slice, moved) => {
         // Handle image drop/paste
         if (!moved && event.dataTransfer?.files?.length) {
           const files = Array.from(event.dataTransfer.files);

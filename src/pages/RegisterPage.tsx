@@ -3,15 +3,33 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
 import { Button, Input, ToastProvider, showToast } from '../components/ui';
 
+/**
+ * Validate password strength
+ * Returns error message or empty string if valid
+ */
+function validatePassword(password: string): string {
+  if (!password) return 'Password is required';
+  if (password.length < 8) return 'Password must be at least 8 characters';
+  if (!/[A-Za-z]/.test(password)) return 'Password must contain at least one letter';
+  if (!/\d/.test(password)) return 'Password must contain at least one number';
+  return '';
+}
+
 export function RegisterPage() {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
+  const [passwordError, setPasswordError] = useState('');
   
   const { register, isLoading } = useAuth();
   const navigate = useNavigate();
+
+  const handlePasswordChange = (value: string) => {
+    setPassword(value);
+    setPasswordError(validatePassword(value));
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -27,8 +45,9 @@ export function RegisterPage() {
       return;
     }
     
-    if (password.length < 6) {
-      showToast.error('Password must be at least 6 characters');
+    const pwdError = validatePassword(password);
+    if (pwdError) {
+      showToast.error(pwdError);
       return;
     }
     
@@ -94,8 +113,9 @@ export function RegisterPage() {
               autoComplete="new-password"
               required
               value={password}
-              onChange={(e) => setPassword(e.target.value)}
+              onChange={(e) => handlePasswordChange(e.target.value)}
               placeholder="••••••••"
+              error={passwordError}
               rightIcon={
                 <button
                   type="button"
@@ -107,7 +127,7 @@ export function RegisterPage() {
                   </span>
                 </button>
               }
-              helperText="At least 6 characters"
+              helperText="At least 8 characters with letters and numbers"
             />
 
             <Input

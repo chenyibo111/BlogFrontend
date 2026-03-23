@@ -37,6 +37,7 @@ export interface Post {
   coverImage?: string;
   author: Author;
   category: string;
+  tags?: string[];
   publishedAt: string;
   createdAt: string;
   updatedAt: string;
@@ -45,6 +46,14 @@ export interface Post {
 }
 
 export type PostStatus = 'DRAFT' | 'PUBLISHED' | 'SCHEDULED' | 'ARCHIVED';
+
+// Tag
+export interface Tag {
+  id: string;
+  slug: string;
+  name: string;
+  postCount: number;
+}
 
 // Author
 export interface Author {
@@ -160,6 +169,9 @@ export interface ApiService {
   // Categories
   getCategories(): Promise<Category[]>;
   getCategoryBySlug(slug: string): Promise<Category>;
+  
+  // Tags
+  getTags(): Promise<Tag[]>;
   
   // Authors
   getAuthors(): Promise<Author[]>;

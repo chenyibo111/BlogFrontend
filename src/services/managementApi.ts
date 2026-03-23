@@ -7,12 +7,12 @@ import type {
   UploadResponse,
   ManagementApiService,
 } from '../types/management';
-import { tokenStorage } from './authApi';
+import { tokenStorage, authApiService } from './authApi';
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000/api';
 
-// Fetch wrapper with auth
-async function fetchWithAuth(url: string, options?: RequestInit) {
+// Fetch wrapper with auth and token refresh
+async function fetchWithAuth(url: string, options?: RequestInit, retry = true): Promise<Response> {
   const token = tokenStorage.getAccessToken();
   
   // Don't set Content-Type for FormData (let browser set it for multipart)
@@ -27,9 +27,36 @@ async function fetchWithAuth(url: string, options?: RequestInit) {
     },
   });
   
-  if (response.status === 401) {
-    window.location.href = '/login';
-    throw new Error('Unauthorized');
+  // Handle 401 - try to refresh token once
+  if (response.status === 401 && retry) {
+    const refreshToken = tokenStorage.getRefreshToken();
+    
+    if (refreshToken) {
+      try {
+        // Try to refresh the token
+        const newTokens = await authApiService.refreshToken();
+        
+        // Retry the original request with new token
+        return await fetch(url, {
+          ...options,
+          headers: {
+            ...(isFormData ? {} : { 'Content-Type': 'application/json' }),
+            Authorization: `Bearer ${newTokens.accessToken}`,
+            ...options?.headers,
+          },
+        });
+      } catch {
+        // Refresh failed, clear tokens and redirect to login
+        tokenStorage.clearTokens();
+        window.location.href = '/login';
+        throw new Error('Session expired');
+      }
+    } else {
+      // No refresh token, redirect to login
+      tokenStorage.clearTokens();
+      window.location.href = '/login';
+      throw new Error('Unauthorized');
+    }
   }
   
   return response;
@@ -51,7 +78,7 @@ const mockPosts: Post[] = [
     createdAt: '2024-03-12T00:00:00Z',
     updatedAt: '2024-03-12T00:00:00Z',
     readTime: 8,
-    status: 'published',
+    status: 'PUBLISHED',
   },
 ];
 
@@ -79,7 +106,7 @@ export const mockManagementApiService: ManagementApiService = {
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
       readTime: Math.ceil(input.content.length / 1000) || 5,
-      status: input.status,
+      status: (input.status?.toUpperCase() || 'DRAFT') as 'DRAFT' | 'PUBLISHED' | 'SCHEDULED' | 'ARCHIVED',
     };
     
     mockPosts.unshift(newPost);
@@ -92,9 +119,11 @@ export const mockManagementApiService: ManagementApiService = {
     const index = mockPosts.findIndex(p => p.id === input.id);
     if (index === -1) throw new Error('Post not found');
     
+    const currentPost = mockPosts[index];
     const updated: Post = {
-      ...mockPosts[index],
+      ...currentPost,
       ...input,
+      status: input.status ? (input.status.toUpperCase() as 'DRAFT' | 'PUBLISHED' | 'SCHEDULED' | 'ARCHIVED') : currentPost.status,
       updatedAt: new Date().toISOString(),
     };
     

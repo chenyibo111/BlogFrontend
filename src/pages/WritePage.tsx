@@ -77,6 +77,7 @@ export function WritePage() {
       return;
     }
     
+    const apiStatus = status.toLowerCase() as 'draft' | 'published';
     setIsSubmitting(true);
     const toastId = showToast.loading(status === 'DRAFT' ? 'Saving draft...' : 'Publishing...');
     
@@ -86,14 +87,14 @@ export function WritePage() {
         await updatePost({
           id: existingPost.id,
           ...formData,
-          status,
+          status: apiStatus,
         });
         showToast.dismiss(toastId);
         showToast.success(status === 'DRAFT' ? 'Draft updated!' : 'Post updated!');
         navigate(`/post/${existingPost.id}`);
       } else {
         // Create new post
-        const newPost = await createPost({ ...formData, status });
+        const newPost = await createPost({ ...formData, status: apiStatus });
         showToast.dismiss(toastId);
         showToast.success(status === 'DRAFT' ? 'Draft saved!' : 'Post published!');
         navigate(`/post/${newPost.id}`);

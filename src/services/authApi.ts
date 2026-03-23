@@ -70,8 +70,8 @@ export const tokenStorage = {
   },
 };
 
-// Fetch wrapper with auth headers
-async function fetchWithAuth(url: string, options?: RequestInit) {
+// Fetch wrapper with auth headers and token refresh
+async function fetchWithAuth(url: string, options?: RequestInit, retry = true): Promise<Response> {
   const token = tokenStorage.getAccessToken();
   
   const response = await fetch(url, {
@@ -83,23 +83,47 @@ async function fetchWithAuth(url: string, options?: RequestInit) {
     },
   });
   
-  if (response.status === 401) {
-    // Token expired, try to refresh
-    try {
-      await authApiService.refreshToken();
-      // Retry with new token
-      const newToken = tokenStorage.getAccessToken();
-      return await fetch(url, {
-        ...options,
-        headers: {
-          'Content-Type': 'application/json',
-          ...(newToken ? { Authorization: `Bearer ${newToken}` } : {}),
-          ...options?.headers,
-        },
-      });
-    } catch {
+  // Handle 401 - try to refresh token once
+  if (response.status === 401 && retry) {
+    const refreshToken = tokenStorage.getRefreshToken();
+    
+    if (refreshToken) {
+      try {
+        // Call refresh endpoint directly to avoid circular dependency
+        const refreshResponse = await fetch(`${API_BASE_URL}/auth/refresh`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ refreshToken }),
+        });
+        
+        if (!refreshResponse.ok) {
+          throw new Error('Token refresh failed');
+        }
+        
+        const apiResponse = await refreshResponse.json();
+        const newTokens = apiResponse.data;
+        tokenStorage.setTokens(newTokens);
+        
+        // Retry the original request with new token
+        return await fetch(url, {
+          ...options,
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${newTokens.accessToken}`,
+            ...options?.headers,
+          },
+        });
+      } catch {
+        // Refresh failed, clear tokens and redirect to login
+        tokenStorage.clearTokens();
+        window.location.href = '/login';
+        throw new Error('Session expired');
+      }
+    } else {
+      // No refresh token, redirect to login
       tokenStorage.clearTokens();
       window.location.href = '/login';
+      throw new Error('Unauthorized');
     }
   }
   
@@ -304,10 +328,12 @@ export const realAuthApiService: AuthApiService = {
     });
     
     if (!response.ok) {
+      tokenStorage.clearTokens();
       throw new Error('Token refresh failed');
     }
     
-    const tokens: AuthTokens = await response.json();
+    const apiResponse = await response.json();
+    const tokens: AuthTokens = apiResponse.data;
     tokenStorage.setTokens(tokens);
     return tokens;
   },
