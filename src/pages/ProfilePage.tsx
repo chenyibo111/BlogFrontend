@@ -126,7 +126,7 @@ export function ProfilePage() {
               <div className="relative">
                 <div className="w-24 h-24 rounded-full overflow-hidden bg-surface-container flex items-center justify-center">
                   {formData.avatar ? (
-                    <img
+                    <img loading="lazy"
                       src={getImageUrl(formData.avatar)}
                       alt="Profile"
                       className="w-full h-full object-cover"

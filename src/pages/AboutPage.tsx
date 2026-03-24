@@ -23,7 +23,7 @@ export function AboutPage() {
         <div className="editorial-grid gap-12 lg:gap-24 items-start">
           <div className="col-span-12 lg:col-span-5 relative">
             <div className="aspect-[4/5] bg-surface-container-high overflow-hidden rounded-sm">
-              <img
+              <img loading="lazy"
                 alt="Portrait"
                 className="w-full h-full object-cover mix-blend-multiply opacity-90 grayscale"
                 src={author?.avatar || 'https://lh3.googleusercontent.com/aida-public/AB6AXuBADWqG908aXB6l1UcBaYJlBEwn-J5rrY5xdYfb5-FcVBaBA5P10BPbUptZpKlYAMA18aaZ9NMhC8P6zPbB-3DC7Xlz_R2k1iS3WaHLF-g_AHhsxnlSQX4zHpSMZPqHxgkpg6O7jXDigfF7-IWjEEp2s4vSmu8vxm625Q3PRdUXCNB3OX7WX2lqOiAD2iW0eHB300HbreUEd1xSP96WHGKm0zsl6KIcyQs8K0VNifGQc3Cpl6vyN3pk6KupDNeAzTeWLHqX9t68znBE'}

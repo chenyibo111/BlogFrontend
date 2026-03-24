@@ -2,6 +2,7 @@ import { BrowserRouter, Routes, Route, Navigate, useLocation } from 'react-route
 import { useEffect } from 'react';
 import { AuthProvider, useAuth } from './hooks/useAuth';
 import { ErrorBoundary } from './components/ErrorBoundary';
+import { SkipToContent } from './components/SkipToContent';
 import { TopNavBar } from './components/TopNavBar';
 import { Footer } from './components/Footer';
 import { HomePage } from './pages/HomePage';
@@ -63,7 +64,10 @@ function PublicRoute({ children }: { children: React.ReactNode }) {
 
 function AppRoutes() {
   return (
-    <Routes>
+    <>
+      {/* #53: Skip to content for keyboard navigation */}
+      <SkipToContent />
+      <Routes>
       {/* Public Routes */}
       <Route path="/" element={
         <>
@@ -147,6 +151,7 @@ function AppRoutes() {
         </div>
       } />
     </Routes>
+    </>
   );
 }
 

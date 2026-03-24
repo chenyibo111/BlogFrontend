@@ -74,6 +74,7 @@ export function LoginPage() {
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
                   className="hover:text-on-surface"
+                  aria-label={showPassword ? 'Hide password' : 'Show password'}
                 >
                   <span className="material-symbols-outlined text-sm">
                     {showPassword ? 'visibility_off' : 'visibility'}
