@@ -9,18 +9,19 @@ export default defineConfig({
     // #66: Code splitting for better performance
     rollupOptions: {
       output: {
-        manualChunks: {
-          // Vendor chunks
-          'vendor-react': ['react', 'react-dom', 'react-router-dom'],
-          'vendor-tiptap': [
-            '@tiptap/core',
-            '@tiptap/react',
-            '@tiptap/starter-kit',
-            '@tiptap/extension-image',
-            '@tiptap/extension-link',
-            '@tiptap/extension-placeholder',
-          ],
-          'vendor-ui': ['@headlessui/react', 'react-hot-toast'],
+        manualChunks(id) {
+          if (id.includes('node_modules')) {
+            // Vendor chunks
+            if (id.includes('react') || id.includes('react-dom') || id.includes('react-router-dom')) {
+              return 'vendor-react';
+            }
+            if (id.includes('@tiptap')) {
+              return 'vendor-tiptap';
+            }
+            if (id.includes('@headlessui') || id.includes('react-hot-toast')) {
+              return 'vendor-ui';
+            }
+          }
         },
       },
     },
