@@ -30,6 +30,7 @@ export const tokenStorage = {
     const token = localStorage.getItem(ACCESS_TOKEN_KEY);
     
     // Debug
+    console.log('getAccessToken called:', {
       hasToken: !!token,
       expiry,
       now: Date.now(),
@@ -37,6 +38,7 @@ export const tokenStorage = {
     });
     
     if (expiry && Date.now() > Number(expiry)) {
+      console.log('Token expired, clearing...');
       tokenStorage.clearTokens();
       return null;
     }
@@ -57,6 +59,7 @@ export const tokenStorage = {
     const token = tokenStorage.getAccessToken();
     const result = token !== null;
     
+    console.log('isAuthenticated check:', {
       hasToken: !!token,
       tokenLength: token?.length,
       result
@@ -229,6 +232,7 @@ export const mockAuthApiService: AuthApiService = {
   
   async resetPassword(input: PasswordResetConfirmInput): Promise<void> {
     await new Promise(resolve => setTimeout(resolve, 300));
+    console.log('Password reset with token:', input.token);
   },
   
   async changePassword(_input: ChangePasswordInput): Promise<void> {
@@ -275,6 +279,7 @@ export const realAuthApiService: AuthApiService = {
     const authData = apiResponse.data;
     
     // Debug: log tokens
+    console.log('Login success, tokens:', {
       hasAccess: !!authData.tokens.accessToken,
       hasRefresh: !!authData.tokens.refreshToken,
       expiresIn: authData.tokens.expiresIn
@@ -285,6 +290,7 @@ export const realAuthApiService: AuthApiService = {
     tokenStorage.setTokens(authData.tokens);
     
     // Verify storage
+    console.log('After storage, isAuthenticated:', tokenStorage.isAuthenticated());
     
     return authData;
   },

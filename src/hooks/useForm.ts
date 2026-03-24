@@ -37,7 +37,6 @@ export function useForm<T extends Record<string, any>>({
   const [values, setValuesState] = useState<T>(initialValues);
   const [errors, setErrors] = useState<Partial<Record<keyof T, string>>>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [touched, setTouched] = useState<Set<keyof T>>(new Set());
 
   const handleChange = useCallback((field: keyof T) => 
     (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
@@ -60,8 +59,6 @@ export function useForm<T extends Record<string, any>>({
 
   const handleBlur = useCallback((field: keyof T) => 
     () => {
-      setTouched(prev => new Set(prev).add(field));
-      
       // Validate on blur if validator provided
       if (validate) {
         const validationErrors = validate(values);
@@ -108,7 +105,6 @@ export function useForm<T extends Record<string, any>>({
   const resetForm = useCallback(() => {
     setValuesState(initialValues);
     setErrors({});
-    setTouched(new Set());
   }, [initialValues]);
 
   const isValid = Object.keys(errors).length === 0;
