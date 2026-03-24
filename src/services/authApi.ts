@@ -70,11 +70,14 @@ export const tokenStorage = {
 };
 
 // Fetch wrapper with auth headers and token refresh
+// #12: 支持 HttpOnly Cookie 模式
 async function fetchWithAuth(url: string, options?: RequestInit, retry = true): Promise<Response> {
   const token = tokenStorage.getAccessToken();
   
+  // #12: credentials: 'include' 用于 HttpOnly Cookie
   const response = await fetch(url, {
     ...options,
+    credentials: 'include', // 发送和接收 cookies
     headers: {
       'Content-Type': 'application/json',
       ...(token ? { Authorization: `Bearer ${token}` } : {}),
@@ -88,10 +91,11 @@ async function fetchWithAuth(url: string, options?: RequestInit, retry = true): 
     
     if (refreshToken) {
       try {
-        // Call refresh endpoint directly to avoid circular dependency
+        // Call refresh endpoint with credentials
         const refreshResponse = await fetch(`${API_BASE_URL}/auth/refresh`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
+          credentials: 'include', // #12: 支持 Cookie
           body: JSON.stringify({ refreshToken }),
         });
         
@@ -106,6 +110,7 @@ async function fetchWithAuth(url: string, options?: RequestInit, retry = true): 
         // Retry the original request with new token
         return await fetch(url, {
           ...options,
+          credentials: 'include',
           headers: {
             'Content-Type': 'application/json',
             Authorization: `Bearer ${newTokens.accessToken}`,
@@ -260,6 +265,7 @@ export const realAuthApiService: AuthApiService = {
     const response = await fetch(`${API_BASE_URL}/auth/login`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
+      credentials: 'include', // #12: 支持 HttpOnly Cookie
       body: JSON.stringify(credentials),
     });
     
@@ -279,6 +285,8 @@ export const realAuthApiService: AuthApiService = {
       expiresIn: authData.tokens.expiresIn
     });
     
+    // #12: 仍然存储 token 到 localStorage 作为备用（兼容 Bearer 模式）
+    // 但主要依赖 HttpOnly Cookie
     tokenStorage.setTokens(authData.tokens);
     
     // Verify storage
@@ -291,6 +299,7 @@ export const realAuthApiService: AuthApiService = {
     const response = await fetch(`${API_BASE_URL}/auth/register`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
+      credentials: 'include', // #12: 支持 HttpOnly Cookie
       body: JSON.stringify(input),
     });
     
@@ -323,6 +332,7 @@ export const realAuthApiService: AuthApiService = {
     const response = await fetch(`${API_BASE_URL}/auth/refresh`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
+      credentials: 'include', // #12: 支持 HttpOnly Cookie
       body: JSON.stringify({ refreshToken }),
     });
     
@@ -353,6 +363,7 @@ export const realAuthApiService: AuthApiService = {
     const response = await fetch(`${API_BASE_URL}/auth/password-reset/request`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
+      credentials: 'include',
       body: JSON.stringify(input),
     });
     
@@ -366,6 +377,7 @@ export const realAuthApiService: AuthApiService = {
     const response = await fetch(`${API_BASE_URL}/auth/password-reset/confirm`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
+      credentials: 'include',
       body: JSON.stringify(input),
     });
     

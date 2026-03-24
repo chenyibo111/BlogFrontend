@@ -52,13 +52,13 @@
   --color-tertiary: #260e07;
 
   --font-family-headline: 'Noto Serif', serif;
-  --font-family-body: 'Inter', sans-serif;
-  --font-family-label: 'Inter', sans-serif;
+  --font-family-body: 'Inter Variable', 'Inter', sans-serif;
+  --font-family-label: 'Inter Variable', 'Inter', sans-serif;
 }
 
 /* Base Styles */
 body {
-  font-family: 'Inter', sans-serif;
+  font-family: 'Inter Variable', 'Inter', sans-serif;
   background-color: #f9f9f9;
   color: #1a1c1c;
 }
