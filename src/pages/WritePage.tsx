@@ -228,7 +228,7 @@ export function WritePage() {
               className="relative aspect-[21/9] bg-surface-container rounded-lg overflow-hidden cursor-pointer group"
             >
               {coverImagePreview ? (
-                <img
+                <img loading="lazy"
                   src={coverImagePreview}
                   alt="Cover"
                   className="w-full h-full object-cover"

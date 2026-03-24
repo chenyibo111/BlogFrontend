@@ -79,7 +79,7 @@ export function HomePage() {
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
             <div className="lg:col-span-7 aspect-[4/3] bg-surface-container overflow-hidden group relative">
               {featuredPost.coverImage ? (
-                <img
+                <img loading="lazy"
                   alt="Featured article"
                   className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
                   src={getImageUrl(featuredPost.coverImage)}
@@ -137,7 +137,7 @@ export function HomePage() {
             >
               <div className="aspect-square bg-surface-container-low mb-6 overflow-hidden">
                 {post.coverImage ? (
-                  <img
+                  <img loading="lazy"
                     alt="Post visual"
                     className="w-full h-full object-cover transition-transform duration-500 hover:scale-110"
                     src={getImageUrl(post.coverImage)}

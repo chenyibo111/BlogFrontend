@@ -79,7 +79,7 @@ export function ArticlePage() {
             <div className="flex flex-col md:flex-row items-center gap-4 text-on-surface-variant font-body">
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 rounded-full overflow-hidden bg-surface-container">
-                  <img
+                  <img loading="lazy"
                     alt="Author"
                     className="w-full h-full object-cover"
                     src={post.author.avatar}
@@ -111,7 +111,7 @@ export function ArticlePage() {
       <section className="max-w-7xl mx-auto px-8 mb-24">
         <div className="aspect-[21/9] w-full rounded-lg overflow-hidden bg-surface-container-high relative">
           {post.coverImage ? (
-            <img
+            <img loading="lazy"
               alt={post.title}
               className="w-full h-full object-cover"
               src={getImageUrl(post.coverImage)}
@@ -166,7 +166,7 @@ export function ArticlePage() {
                 <Link to={`/post/${relatedPost.id}`}>
                   <div className="aspect-[16/10] overflow-hidden rounded-lg bg-surface-container mb-6 relative">
                     {relatedPost.coverImage ? (
-                      <img
+                      <img loading="lazy"
                         alt={relatedPost.title}
                         className="w-full h-full object-cover group-hover:scale-[1.03] transition-transform duration-700"
                         src={getImageUrl(relatedPost.coverImage)}
