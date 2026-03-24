@@ -1,9 +1,11 @@
+import { memo } from 'react';
 import { Link } from 'react-router-dom';
 import { usePosts } from '../hooks/useApi';
 import { useAuth } from '../hooks/useAuth';
 import { getImageUrl } from '../utils/imageHelper';
+import { PostCardSkeleton } from '../components/Skeleton';
 
-export function HomePage() {
+function HomePageComponent() {
   const { data: postsData, loading, error } = usePosts({ limit: 3 });
   const { isAuthenticated } = useAuth();
 
@@ -11,7 +13,12 @@ export function HomePage() {
     return (
       <main className="pt-32 pb-24">
         <div className="max-w-7xl mx-auto px-8">
-          <p className="text-center text-on-surface-variant">Loading...</p>
+          {/* #7: 骨架屏替代 Loading... */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {[1, 2, 3].map((i) => (
+              <PostCardSkeleton key={i} />
+            ))}
+          </div>
         </div>
       </main>
     );
@@ -138,7 +145,7 @@ export function HomePage() {
               <div className="aspect-square bg-surface-container-low mb-6 overflow-hidden">
                 {post.coverImage ? (
                   <img loading="lazy"
-                    alt="Post visual"
+                    alt={`Cover image for "${post.title}"`}
                     className="w-full h-full object-cover transition-transform duration-500 hover:scale-110"
                     src={getImageUrl(post.coverImage)}
                     onError={(e) => {
@@ -193,3 +200,6 @@ export function HomePage() {
     </main>
   );
 }
+
+// #5: React.memo 优化，避免不必要的重渲染
+export const HomePage = memo(HomePageComponent);

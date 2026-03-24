@@ -60,8 +60,9 @@ export function TopNavBar() {
             <Link
               to="/write"
               className="hidden md:inline-flex items-center gap-1.5 px-3 py-1.5 bg-primary text-on-primary rounded-lg hover:opacity-90 transition-opacity text-sm font-medium"
+              aria-label="Write a new post"
             >
-              <span className="material-symbols-outlined text-sm">edit</span>
+              <span className="material-symbols-outlined text-sm" aria-hidden="true">edit</span>
               Write
             </Link>
           )}
