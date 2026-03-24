@@ -56,7 +56,6 @@ export function WritePage() {
   useEffect(() => {
     if (initialFormData && !initializedRef.current) {
       initializedRef.current = true;
-      console.log('Loading post data:', existingPost);
       // Using queueMicrotask to defer state updates outside the effect
       // This avoids the cascading render warning while still updating the form
       queueMicrotask(() => {

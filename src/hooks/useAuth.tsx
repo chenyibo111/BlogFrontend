@@ -29,14 +29,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     let mounted = true;
 
     const initAuth = async () => {
-      console.log('initAuth started');
       
       // Only call API if we have a token
       const isAuth = tokenStorage.isAuthenticated();
-      console.log('isAuthenticated result:', isAuth);
       
       if (!isAuth) {
-        console.log('No token, setting not authenticated');
         if (mounted) {
           setState({
             user: null,
@@ -49,9 +46,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       }
 
       try {
-        console.log('Calling getCurrentUser...');
         const user = await authApiService.getCurrentUser();
-        console.log('getCurrentUser result:', user);
         
         if (mounted) {
           setState({
@@ -60,7 +55,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
             isLoading: false,
             error: null,
           });
-          console.log('Auth state updated:', { user: !!user, isAuthenticated: !!user });
         }
       } catch (error) {
         console.error('getCurrentUser error:', error);
