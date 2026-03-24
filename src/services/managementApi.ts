@@ -208,8 +208,11 @@ export const realManagementApiService: ManagementApiService = {
     return data.data;
   },
   
-  // Placeholder methods
-  deletePost: async () => {},
+  async deletePost(id: string | number): Promise<void> {
+    await fetchWithAuth(`${API_BASE_URL}/posts/${id}`, {
+      method: 'DELETE',
+    });
+  },
   publishPost: async () => emptyPost,
   unpublishPost: async () => emptyPost,
   getPostVersions: async () => [],

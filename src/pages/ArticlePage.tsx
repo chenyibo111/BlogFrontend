@@ -1,13 +1,18 @@
+import { useState } from 'react';
 import { Link, useParams, useNavigate } from 'react-router-dom';
 import { usePostById, useRelatedPosts } from '../hooks/useApi';
 import { useAuth } from '../hooks/useAuth';
+import { useDeletePost } from '../hooks/useManagement';
 import { getImageUrl } from '../utils/imageHelper';
 import { sanitizeHtml } from '../utils/sanitize';
+import { showToast, ToastProvider } from '../components/ui';
 
 export function ArticlePage() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const { user } = useAuth();
+  const { deletePost, loading: deleting } = useDeletePost();
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   
   // Parse ID - could be numeric ID or slug
   // Currently using id directly for API call
@@ -16,6 +21,18 @@ export function ArticlePage() {
   const { data: relatedPosts } = useRelatedPosts(post?.id || 0, 2);
 
   const isAuthor = user && post && user.id === post.author.id;
+
+  const handleDelete = async () => {
+    if (!post) return;
+    
+    try {
+      await deletePost(post.id);
+      showToast.success('Post deleted successfully');
+      navigate('/');
+    } catch {
+      showToast.error('Failed to delete post');
+    }
+  };
 
   if (loading) {
     return (
@@ -38,21 +55,60 @@ export function ArticlePage() {
   }
 
   return (
-    <main className="pt-32 pb-24">
+    <>
+      <ToastProvider />
+      <main className="pt-32 pb-24">
       {/* Article Header */}
       <header className="max-w-7xl mx-auto px-8 mb-16">
         <div className="grid grid-cols-12 gap-8">
           <div className="col-span-12 md:col-start-3 md:col-span-8">
-            {/* Edit Button - Only shown to author */}
+            {/* Edit/Delete Buttons - Only shown to author */}
             {isAuthor && (
-              <div className="flex justify-end mb-4">
+              <div className="flex justify-end gap-2 mb-4">
                 <button
                   onClick={() => navigate(`/write/${post.id}`)}
                   className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-surface-container text-on-surface rounded-lg hover:bg-surface-container-high transition-colors text-sm font-medium"
+                  aria-label="Edit post"
                 >
-                  <span className="material-symbols-outlined text-sm">edit</span>
-                  Edit Post
+                  <span className="material-symbols-outlined text-sm" aria-hidden="true">edit</span>
+                  Edit
                 </button>
+                <button
+                  onClick={() => setShowDeleteConfirm(true)}
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-error/10 text-error rounded-lg hover:bg-error/20 transition-colors text-sm font-medium"
+                  aria-label="Delete post"
+                >
+                  <span className="material-symbols-outlined text-sm" aria-hidden="true">delete</span>
+                  Delete
+                </button>
+              </div>
+            )}
+
+            {/* Delete Confirmation Modal */}
+            {showDeleteConfirm && (
+              <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+                <div className="bg-white rounded-lg p-6 max-w-md mx-4 shadow-xl">
+                  <h3 className="text-lg font-bold text-on-surface mb-2">Delete Post</h3>
+                  <p className="text-on-surface-variant mb-4">
+                    Are you sure you want to delete "{post?.title}"? This action cannot be undone.
+                  </p>
+                  <div className="flex justify-end gap-3">
+                    <button
+                      onClick={() => setShowDeleteConfirm(false)}
+                      className="px-4 py-2 text-on-surface-variant hover:text-on-surface transition-colors"
+                      disabled={deleting}
+                    >
+                      Cancel
+                    </button>
+                    <button
+                      onClick={handleDelete}
+                      className="px-4 py-2 bg-error text-white rounded-lg hover:opacity-90 transition-opacity disabled:opacity-50"
+                      disabled={deleting}
+                    >
+                      {deleting ? 'Deleting...' : 'Delete'}
+                    </button>
+                  </div>
+                </div>
               </div>
             )}
 
@@ -194,5 +250,6 @@ export function ArticlePage() {
         </div>
       </section>
     </main>
+    </>
   );
 }

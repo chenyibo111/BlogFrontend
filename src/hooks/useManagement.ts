@@ -49,6 +49,26 @@ export function useUpdatePost() {
   return { updatePost, loading, error };
 }
 
+export function useDeletePost() {
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<Error | null>(null);
+
+  const deletePost = useCallback(async (id: string | number) => {
+    setLoading(true);
+    setError(null);
+    try {
+      await managementApiService.deletePost(String(id));
+    } catch (err) {
+      setError(err instanceof Error ? err : new Error('Failed to delete post'));
+      throw err;
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  return { deletePost, loading, error };
+}
+
 // Media Upload
 export function useUploadImage() {
   const [loading, setLoading] = useState(false);
