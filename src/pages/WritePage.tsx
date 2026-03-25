@@ -20,7 +20,11 @@ export function WritePage() {
   const { slug: postSlug } = useParams<{ slug: string }>();
   const isEdit = !!postSlug;
   
-  const { data: existingPost, loading: loadingPost } = usePostBySlug(postSlug || '');
+  // Only fetch post data in edit mode
+  const { data: existingPost, loading: loadingPost } = isEdit 
+    ? usePostBySlug(postSlug)
+    : { data: null, loading: false };
+  
   const { createPost, loading: creating } = useCreatePost();
   const { updatePost, loading: updating } = useUpdatePost();
   const { uploadImage, loading: uploading } = useUploadImage();
