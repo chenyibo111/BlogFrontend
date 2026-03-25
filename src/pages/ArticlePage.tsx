@@ -66,7 +66,7 @@ export function ArticlePage() {
             {isAuthor && (
               <div className="flex justify-end gap-2 mb-4">
                 <button
-                  onClick={() => navigate(`/write/${post.id}`)}
+                  onClick={() => navigate(`/write/${post.slug}`)}
                   className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-surface-container text-on-surface rounded-lg hover:bg-surface-container-high transition-colors text-sm font-medium"
                   aria-label="Edit post"
                 >
