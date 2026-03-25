@@ -57,8 +57,10 @@ export function usePostById(id: number | string) {
   return useAsyncData<Post>(() => api.getPostById(typeof id === 'string' ? parseInt(id) : id), [id]);
 }
 
-// Alias for backwards compatibility
-export const usePostBySlug = usePostById;
+// Use slug directly instead of converting to number
+export function usePostBySlug(slug: string) {
+  return useAsyncData<Post>(() => api.getPostBySlug(slug), [slug]);
+}
 
 export function useRelatedPosts(postId: number, limit?: number) {
   return useAsyncData<Post[]>(

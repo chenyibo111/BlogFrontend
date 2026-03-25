@@ -189,9 +189,19 @@ export const realApiService: ApiService = {
     return transformPost(response.data);
   },
 
-  // Alias for backwards compatibility
-  async getPostBySlug(id: number): Promise<Post> {
-    return this.getPostById(id);
+  async getPostBySlug(slug: string): Promise<Post> {
+    // Get token from localStorage if available
+    const token = localStorage.getItem('access_token');
+    
+    const response = await fetchWithTimeout<ApiResponse<any>>(
+      `${API_BASE_URL}/posts/${slug}`,
+      {
+        headers: {
+          ...(token ? { Authorization: `Bearer ${token}` } : {}),
+        },
+      }
+    );
+    return transformPost(response.data);
   },
 
   async getRelatedPosts(_postId: number, limit = 3): Promise<Post[]> {

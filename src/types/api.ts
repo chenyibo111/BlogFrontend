@@ -168,7 +168,7 @@ export interface ApiService {
   // Posts
   getPosts(params?: GetPostsParams): Promise<PaginatedResponse<Post>>;
   getPostById(id: number): Promise<Post>;
-  getPostBySlug(id: number): Promise<Post>;  // Alias for backwards compatibility
+  getPostBySlug(slug: string): Promise<Post>;
   getRelatedPosts(postId: number, limit?: number): Promise<Post[]>;
   
   // Categories
